@@ -1,6 +1,5 @@
-
 import numpy as np
-from scipy import stats
+
 
 from si.data.dataset import Dataset
 
