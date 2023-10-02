@@ -6,7 +6,7 @@ from si.data.dataset import Dataset
 from si.statistics.f_classification import f_classification
 
 
-class SelectKBest:
+class SelectPercentile:
     """
     Select features according to the k highest scores.
     Feature ranking is performed by computing the scores of each feature using a scoring function:
@@ -27,7 +27,7 @@ class SelectKBest:
     p: array, shape (n_features,)
         p-values of F-scores.
     """
-    def __init__(self, score_func: Callable = f_classification, k: int = 10):
+    def __init__(self, score_func: Callable = f_classification, percentile: int = 5):
         """
         Select features according to the k highest scores.
 
@@ -38,12 +38,12 @@ class SelectKBest:
         k: int, default=10
             Number of top features to select.
         """
-        self.k = k
+        self.percentile = percentile
         self.score_func = score_func
         self.F = None
         self.p = None
 
-    def fit(self, dataset: Dataset) -> 'SelectKBest':
+    def fit(self, dataset: Dataset) -> 'SelectPercentile':
         """
         It fits SelectKBest to compute the F scores and p-values.
 
@@ -59,6 +59,7 @@ class SelectKBest:
         """
         self.F, self.p = self.score_func(dataset)
         self.F = np.nan_to_num(self.F)
+        print(self.F)
         return self
 
     def transform(self, dataset: Dataset) -> Dataset:
@@ -75,7 +76,9 @@ class SelectKBest:
         dataset: Dataset
             A labeled dataset with the k highest scoring features.
         """
-        idxs = np.argsort(self.F)[-self.k:]
+        threshold = np.percentile(self.F, 100 - self.percentile)
+        idxs = np.where(self.F >= threshold)[0]
+        print(idxs)
         features = np.array(dataset.features)[idxs]
         return Dataset(X=dataset.X[:, idxs], y=dataset.y, features=list(features), label=dataset.label)
 
@@ -107,7 +110,7 @@ if __name__ == '__main__':
                       features=["f1", "f2", "f3", "f4"],
                       label="y")
 
-    selector = SelectKBest(k=2)
+    selector = SelectPercentile()
     selector = selector.fit(dataset)
     dataset = selector.transform(dataset)
     print(dataset.features)
