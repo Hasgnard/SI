@@ -41,3 +41,32 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
     train = Dataset(dataset.X[train_idxs], dataset.y[train_idxs], features=dataset.features, label=dataset.label)
     test = Dataset(dataset.X[test_idxs], dataset.y[test_idxs], features=dataset.features, label=dataset.label)
     return train, test
+
+def stratified_train_test_split (dataset: Dataset, test_size: float = 0.2, random_state: int=42) -> Tuple[Dataset, Dataset]:
+
+    np.random.seed(random_state)
+
+    #get unique labels and counts
+    labels, counts = np.unique(dataset.y, return_counts=True)
+
+    #empty lists for train and test indices
+    train_idxs = []
+    test_idxs = []
+
+    #loop through unique labels
+    for label in labels:
+        # calculate number of test samples for this label
+        n_label_test = int(counts[np.where(label == labels)] * test_size)
+        
+        # shuffle and select indices for this label and add them to the test indices
+        indx_permutations = np.random.permutation(np.where(dataset.y == label)[0])
+        test_idxs.extend(indx_permutations[:n_label_test])
+
+        # add the remaining indices to the train indices
+        train_idxs.extend(indx_permutations[n_label_test:])
+    
+    # training and testing datasets
+    train = Dataset(dataset.X[train_idxs], dataset.y[train_idxs], features = dataset.features, label = dataset.label)
+    test = Dataset(dataset.X[test_idxs], dataset.y[test_idxs], features = dataset.features, label = dataset.label)
+
+    return train, test
