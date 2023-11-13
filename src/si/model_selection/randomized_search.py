@@ -61,7 +61,7 @@ def randomized_search_cv(model,
         for key, value in hyperparameters.items():
             setattr(model, key, value)
       
-        model_cv_scores = k_fold_cross_validation(model, dataset, cv, scoring)
+        model_cv_scores = k_fold_cross_validation(model, dataset, scoring, cv)
 
         randomized_search_output["scores"].append(model_cv_scores)
 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
 
     # load the dataset
-    dataset = read_csv('C:\\Users\\Ruben Fernandes\\Documents\\GitHub\\GitHub\\si\\datasets\\breast_bin\\breast-bin.csv', sep=",",features=True,label=True)
+    dataset = read_csv('/home/ruben/Bioinformática/2º Semestre/Sistemas Inteligentes para a Bioinformática [MBINF]/si/datasets/breast_bin/breast-bin.csv', sep=",",features=True,label=True)
 
     # define the model
     model = LogisticRegression()
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # print the results
     print('Grid search results:\n')
 
-    print(f'Best score:\n {results["best_scores"]}')
+    print(f'Best score:\n {results["best_score"]}')
     print()
     print(f'Best hyperparameters:\n {results["best_hyperparameters"]}')
     print()
