@@ -1,6 +1,6 @@
 import copy
 from abc import abstractmethod
-
+import unittest
 import numpy as np
 
 from si.neural_networks.optimizers import Optimizer
@@ -210,3 +210,137 @@ class DenseLayer(Layer):
             The shape of the output of the layer.
         """
         return (self.n_units,)
+
+
+class Dropout(Layer):
+    """
+    Dropout layer of a neural network.
+    """
+
+    def __init__(self, rate: float):
+        """
+        Initialize the dropout layer.
+
+        Parameters
+        ----------
+        rate: float
+            The dropout rate, i.e., the fraction of the input units to drop.
+        """
+        super().__init__()
+        self.rate = rate
+        self._input_shape = None
+
+        self.input = None
+        self.output = None
+
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+        """
+        Perform forward propagation on the given input.
+
+        Parameters
+        ----------
+        input: numpy.ndarray
+            The input to the layer.
+        training: bool
+            Whether the layer is in training mode or in inference mode.
+
+        Returns
+        -------
+        numpy.ndarray
+            The output of the layer.
+        """
+        self.input = input
+        if training:
+            # Computethe scaling factor (1 / (1-probability))
+            self.scale = 1 / (1 - self.rate)
+
+            # Compute the mask using a binomial distribution with probability (1-probability ) and with size equal to the input;
+            self.mask = np.random.binomial(1, 1 - self.rate, size=input.shape) / (1 - self.rate)
+
+            # Compute the output (input * mask * scaling factor)
+            self.output = input * self.mask * self.scale
+
+            return self.output
+        
+        if not training:
+            self.output = input
+            return self.output
+        
+    
+    def backward_propagation(self, output_error: np.ndarray) -> float:
+        """
+        performs backward propagation on the given error, i.e., 
+        multiplies the received error by the mask
+
+        Parameters
+        ----------
+        output_error: numpy.ndarray
+            The output error of the layer.
+
+        Returns
+        -------
+        float
+            The input error of the layer.
+        """
+        # multiply the output_error by the mask and return it
+
+        input_error = output_error * self.mask * self.scale
+
+        return input_error
+    
+
+    def output_shape(self) -> tuple:
+        """
+        Returns the input_shape (dropout does not change the shape of the data)
+
+        Returns
+        -------
+        tuple
+            The shape of the output of the layer.
+        """
+        return self.input_shape()
+
+
+    def parameters(self) -> int:
+        """
+        Returns the number of parameters of the layer.
+
+        Returns
+        -------
+        int
+            The number of parameters of the layer.
+        """
+        return 0
+    
+
+class TestDropout(unittest.TestCase):
+    def test_random_input(self):
+        # Create a random input
+        input_data = np.random.randn(3, 3)
+
+        # Create a Dropout layer with a moderate dropout rate
+        dropout_rate = 0.3
+        dropout_layer = Dropout(rate=dropout_rate)
+
+        # During training
+        output_train = dropout_layer.forward_propagation(input_data, training=True)
+
+        # Check if the shape of the output is the same as the input
+        self.assertEqual(output_train.shape, input_data.shape)
+
+        # Check if some elements are zeroed out (due to dropout)
+        self.assertTrue(np.any(output_train != input_data))
+
+        # During inference
+        output_inference = dropout_layer.forward_propagation(input_data, training=False)
+
+        # Check if the shape of the output is the same as the input
+        self.assertEqual(output_inference.shape, input_data.shape)
+
+        # Check if the output is equal to the input (no dropout during inference)
+        self.assertTrue(np.array_equal(output_inference, input_data))
+
+if __name__ == '__main__':
+    unittest.main()
+
