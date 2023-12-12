@@ -125,6 +125,63 @@ class Dataset:
             "var": self.get_variance()
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+    
+    def dropna(self) -> None:
+        """
+        Drops all samples containing at least one null value (NaN)
+        """
+        # Check if there are any NaNs in X
+        NaNs = np.isnan(self.X).any(axis=1)
+        # Remove NaNs from X
+        self.X = self.X[~NaNs]
+        # Remove corresponding labels (y)
+        if self.has_label():
+            self.y = self.y[~NaNs]
+
+
+    def fillna(self, value:[float, str]) -> None:
+    
+        '''
+        Replaces all null values with another value or the mean or median 
+        of the feature/variable.
+
+        Parameters
+        ----------
+        value:
+            replace the NaN with this value
+        '''
+        # replace if value is str "mean" or "median"
+        if isinstance(value, str):
+            if value == 'mean':
+                value = np.nan_to_num(self.X, nan=np.nanmean(self.X, axis=0))
+            elif value == 'median':
+                value = np.nan_to_num(self.X, nan=np.nanmedian(self.X, axis=0))
+            else:
+                raise ValueError("value must be either 'mean' or 'median' or a float")
+        
+        # replace if value is float
+        else:
+            value = np.nan_to_num(self.X, nan=value)
+    
+
+    def remove_by_index(self, index: int) -> None:
+        """
+        Removes a sample by index
+
+        Parameters
+        ----------
+        index: int
+            The index of the sample to remove
+        """
+        # Check if index is in bounds
+        if not (0 <= index < len(self.X)):
+            raise ValueError("Index out of bounds")
+
+        # Remove sample from X
+        self.X = np.delete(self.X, index, axis=0)
+        # Remove corresponding labels (y)
+        if self.has_label():
+            self.y = np.delete(self.y, index, axis=0)
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
