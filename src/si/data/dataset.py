@@ -139,7 +139,7 @@ class Dataset:
             self.y = self.y[~NaNs]
 
 
-    def fillna(self, value:[float, str]) -> None:
+    def fillna(self, value: Union[float, str]) -> None:
     
         '''
         Replaces all null values with another value or the mean or median 
@@ -151,17 +151,31 @@ class Dataset:
             replace the NaN with this value
         '''
         # replace if value is str "mean" or "median"
+        # if isinstance(value, str):
+        #     if value == 'mean':
+        #         self.X = np.nan_to_num(self.X, nan=np.nanmean(self.X, axis=0))
+        #     elif value == 'median':
+        #         self.X = np.nan_to_num(self.X, nan=np.nanmedian(self.X, axis=0))
+        #     else:
+        #         raise ValueError("value must be either 'mean' or 'median' or a float")
+        
+        # # replace if value is float
+        # else:
+        #     self.X = np.nan_to_num(self.X, nan=value)
         if isinstance(value, str):
             if value == 'mean':
-                value = np.nan_to_num(self.X, nan=np.nanmean(self.X, axis=0))
+                replacement_values = np.nanmean(self.X, axis=0)
             elif value == 'median':
-                value = np.nan_to_num(self.X, nan=np.nanmedian(self.X, axis=0))
+                replacement_values = np.nanmedian(self.X, axis=0)
             else:
                 raise ValueError("value must be either 'mean' or 'median' or a float")
-        
-        # replace if value is float
+    
+    # replace if value is float
         else:
-            value = np.nan_to_num(self.X, nan=value)
+            replacement_values = value
+
+    # Replace NaN values with the specified/replacement values
+        self.X = np.where(np.isnan(self.X), replacement_values, self.X)
     
 
     def remove_by_index(self, index: int) -> None:
