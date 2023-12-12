@@ -59,7 +59,7 @@ class SelectPercentile:
         """
         self.F, self.p = self.score_func(dataset)
         self.F = np.nan_to_num(self.F)
-        print(self.F)
+        
         return self
 
     def transform(self, dataset: Dataset) -> Dataset:
@@ -78,7 +78,7 @@ class SelectPercentile:
         """
         threshold = np.percentile(self.F, 100 - self.percentile)
         idxs = np.where(self.F >= threshold)[0]
-        print(idxs)
+        
         features = np.array(dataset.features)[idxs]
         return Dataset(X=dataset.X[:, idxs], y=dataset.y, features=list(features), label=dataset.label)
 
