@@ -43,6 +43,23 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
     return train, test
 
 def stratified_train_test_split (dataset: Dataset, test_size: float = 0.2, random_state: int=42) -> Tuple[Dataset, Dataset]:
+    '''
+    Perform a stratified train test split on the dataset
+
+    Parameters
+    ----------
+    dataset: Dataset
+        The dataset to split
+    test_size: float
+        The proportion of the dataset to include in the test split
+    random_state: int
+        The seed of the random number generator
+    
+    Returns
+    -------
+    Tuple [Dataset, Dataset]
+        A tuple containing the training and testing datasets
+    '''
 
     np.random.seed(random_state)
 
