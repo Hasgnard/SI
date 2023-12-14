@@ -74,38 +74,3 @@ def randomized_search_cv(model,
 
     
     return randomized_search_output
-
-    
-
-if __name__ == '__main__':
-    from si.models.logistic_regression import LogisticRegression
-    from si.model_selection.grid_search import grid_search_cv
-    from si.io.csv_file import read_csv
-
-
-    # load the dataset
-    dataset = read_csv('/home/ruben/Bioinformática/2º Semestre/Sistemas Inteligentes para a Bioinformática [MBINF]/si/datasets/breast_bin/breast-bin.csv', sep=",",features=True,label=True)
-
-    # define the model
-    model = LogisticRegression()
-
-    # define the hyperparameter grid
-    hyperparameter_grid = {'l2_penalty': np.linspace(1, 10, 10),
-                           'alpha': np.linspace(0.001, 0.0001, 100),
-                           'max_iter': np.linspace(1000, 2000, 200),
-                           }
-    # print(hyperparameter_grid)
-
-    # perform grid search cross validation
-    results = randomized_search_cv(model=model, dataset=dataset, hyperparameter_grid=hyperparameter_grid, cv=5, n_iter=10)
-    
-    # print the results
-    print('Grid search results:\n')
-
-    print(f'Best score:\n {results["best_score"]}')
-    print()
-    print(f'Best hyperparameters:\n {results["best_hyperparameters"]}')
-    print()
-    print(f'All scores:\n {results["scores"]}')
-    print()
-    print(f'All hyperparameters:\n {results["hyperparameters"]}')

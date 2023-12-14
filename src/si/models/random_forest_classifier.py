@@ -8,7 +8,9 @@ from si.metrics.accuracy import accuracy
 class RandomForestClassifier:
 
     """
-
+    The RandomForestClassifier model is an ensemble model that fits a number of decision 
+    trees on various sub-samples of the dataset and uses averaging to improve the predictive
+    accuracy and control over-fitting.
     """
 
     def __init__(self, n_estimators: int = 100, 
@@ -19,7 +21,22 @@ class RandomForestClassifier:
                  mode: Literal['gini', 'entropy'] = 'gini') -> None:
 
         """
-        
+        Initializes the RandomForestClassifier model.
+
+        Parameters
+        ----------
+        n_estimators: int
+            The number of trees in the forest.
+        max_features: float
+            The number of features to consider when looking for the best split
+        min_sample_split: int
+            The minimum number of samples required to split an internal node
+        seed: int
+            The seed to ensure reproducibility
+        max_depth: int
+            The maximum depth of the tree
+        mode: str
+            The mode to use to specify the criterion for splitting in the decision trees
         """
 
         self.n_estimators = n_estimators
@@ -72,13 +89,21 @@ class RandomForestClassifier:
     def predict(self, dataset: Dataset) -> np.ndarray:
 
         """
-        Make predictions on the dataset
+        Make predictions on the given dataset.
 
-
-
+        Parameters
+        ----------
+        dataset: Dataset
+            The dataset to make predictions on
+        
+        Returns
+        -------
+        np.ndarray
+            The predictions for the given dataset
         """
         ind_tree_predictions = []
 
+        # get the predictions for each tree
         for tree, features in self.tree:
             tree_predictions = tree.predict(Dataset(X=dataset.X[:, features], y = dataset.y))
             ind_tree_predictions.append(tree_predictions)
