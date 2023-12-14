@@ -5,10 +5,35 @@ from si.metrics.mse import mse
 
 
 class RidgeRegressionLeastSquares:
+    """
+    The Ridge Regression Least Squares model employs the least 
+    squares method to fit the model to the dataset. 
+    It incorporates L2 regularization, which penalizes large 
+    coefficients to mitigate overfitting and improve the model's 
+    generalization performance.
 
+    Parameters
+    ----------
+    l2_penalty: float
+        The L2 regularization parameter
+    scale: bool
+        Whether to scale the dataset or not
+
+    Attributes
+    ----------
+    theta: np.ndarray
+        The model parameters
+        For example, x0*
+    theta_zero: float
+        The intercept term
+        for example, theta_zero 
+    """
 
     def __init__(self, l2_penalty: float = 1, scale: bool = True):
+
         """
+        Initializes the RidgeRegressionLeastSquares model.
+
         Parameters
         ----------
         l2_penalty: float
@@ -16,6 +41,7 @@ class RidgeRegressionLeastSquares:
         scale: bool
             Whether to scale the dataset or not
         """
+    
         # parameters
         self.l2_penalty = l2_penalty
         self.scale = scale
@@ -27,8 +53,9 @@ class RidgeRegressionLeastSquares:
         self.std = None
 
     def fit(self, dataset: Dataset) -> 'RidgeRegressionLeastSquares':
+
         """
-        It fits the model to the given dataset
+        It fits the model to the given dataset.
 
         Parameters
         ----------
@@ -40,6 +67,7 @@ class RidgeRegressionLeastSquares:
         self: RidgeRegressionLeastSquares
             The fitted model
         """
+
         # scale the dataset
 
         if self.scale:
@@ -69,8 +97,9 @@ class RidgeRegressionLeastSquares:
     
 
     def predict(self, dataset: Dataset) -> np.ndarray:
+
         """
-        It predicts the values of the given dataset
+        It predicts the values of the given dataset.
 
         Parameters
         ----------
@@ -98,6 +127,7 @@ class RidgeRegressionLeastSquares:
 
 
     def score(self, dataset: Dataset) -> float:
+
         """
         Compute the mse score using the mse function
         
@@ -113,9 +143,9 @@ class RidgeRegressionLeastSquares:
         """
         return mse(dataset.y, self.predict(dataset))
 
-# This is how you can test it against sklearn to check if everything is fine
+# This is how you can test it against sklearn
 if __name__ == '__main__':
-    # make a linear dataset
+    
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
     y = np.dot(X, np.array([1, 2])) + 3
     dataset_ = Dataset(X=X, y=y)
