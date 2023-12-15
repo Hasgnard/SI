@@ -178,3 +178,23 @@ class CategoricalCrossEntropy(LossFunction):
         p = np.clip(y_pred, 1e-15, 1 - 1e-15)
         return - (y_true / p)
 
+
+
+if __name__ == '__main__':
+
+    import tensorflow as tf
+    
+    np.random.seed(42)
+    y_true = np.random.randint(0, 2, size=(100, 5)).astype(float)  # Binary labels for a 5-class problem
+    y_pred = np.random.rand(100, 5)
+
+    # Compute loss using your implementation
+    p_custom = np.clip(y_pred, 1e-15, 1 - 1e-15)
+    loss_custom = np.sum(-y_true * np.log(p_custom))
+
+    # Compute loss using TensorFlow
+    loss_tf = tf.reduce_sum(tf.keras.losses.categorical_crossentropy(y_true, y_pred, from_logits=True).numpy())
+
+    # Compare the results
+    print("Loss (Custom):", loss_custom)
+    print("Loss (TensorFlow):", loss_tf)  

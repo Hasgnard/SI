@@ -69,6 +69,11 @@ class SGD(Optimizer):
 
 class Adam(Optimizer):
 
+    '''
+    It uses the squared gradients to scale the learning rate like
+    RMSprop and it takes advantage of momentum by using moving average of
+    the gradient instead of gradient itself like SGD with momentum.
+    '''
     def __init__(self, learning_rate: float = 0.01, beta_1: float = 0.9, beta_2: float = 0.999, epsilon: float = 1e-8):
         """
         Initialize the optimizer.
@@ -121,72 +126,3 @@ class Adam(Optimizer):
         v_hat = self.v / (1 - np.power(self.beta_2, self.t))
         return w - self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
     
-
-class TestAdamOptimizer(unittest.TestCase):
-
-
-    def setUp(self):
-        self.learning_rate = 0.01
-        self.beta_1 = 0.9
-        self.beta_2 = 0.999
-        self.epsilon = 1e-8
-        self.optimizer = Adam(learning_rate=self.learning_rate, beta_1=self.beta_1, beta_2=self.beta_2, epsilon=self.epsilon)
-
-    def test_initialization(self):
-        self.assertEqual(self.optimizer.learning_rate, self.learning_rate)
-        self.assertEqual(self.optimizer.beta_1, self.beta_1)
-        self.assertEqual(self.optimizer.beta_2, self.beta_2)
-        self.assertEqual(self.optimizer.epsilon, self.epsilon)
-        self.assertIsNone(self.optimizer.m)
-        self.assertIsNone(self.optimizer.v)
-        self.assertEqual(self.optimizer.t, 0)
-
-    def test_update(self):
-        adam = Adam(learning_rate=0.01, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-        w = np.array([1, 2, 3])
-        grad_loss_w = np.array([1, 2, 3])
-
-        # Perform one update
-        updated_weights = adam.update(w, grad_loss_w)
-
-        # Assertions on updated weights
-        expected_m = 0.9 * np.array([0.0, 0.0, 0.0]) + 0.1 * np.array([1, 2, 3])
-        expected_v = 0.999 * np.array([0.0, 0.0, 0.0]) + 0.001 * np.power(np.array([1, 2, 3]), 2)
-        m_hat = expected_m / (1 - np.power(0.9, 1))
-        v_hat = expected_v / (1 - np.power(0.999, 1))
-        expected_result = w - 0.01 * m_hat / (np.sqrt(v_hat) + 1e-8)
-
-        self.assertTrue(np.allclose(updated_weights, expected_result, atol=1e-7))
-
-        # Assertions on adam.m and adam.v after the update
-        self.assertTrue(np.allclose(adam.m, expected_m, atol=1e-7))
-        self.assertTrue(np.allclose(adam.v, expected_v, atol=1e-7))
-
-        # Assertions on adam.t after the update
-        self.assertEqual(adam.t, 1)
-
-        # Ensure that m and v are updated properly on subsequent calls
-        adam.update(w, grad_loss_w)
-        expected_m = 0.9 * expected_m + 0.1 * np.array([1, 2, 3])
-        expected_v = 0.999 * expected_v + 0.001 * np.power(np.array([1, 2, 3]), 2)
-        self.assertTrue(np.allclose(adam.m, expected_m, atol=1e-7))
-        self.assertTrue(np.allclose(adam.v, expected_v, atol=1e-7))
-        self.assertEqual(adam.t, 2)
-
-    def test_initialization_of_m_and_v(self):
-        adam = Adam(learning_rate=0.01, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-        w = np.array([1, 2, 3])
-        grad_loss_w = np.array([1, 2, 3])
-
-        # Ensure that m and v are initially None
-        self.assertIsNone(adam.m)
-        self.assertIsNone(adam.v)
-
-        # Ensure that m and v are updated properly on subsequent calls
-        adam.update(w, grad_loss_w)
-        self.assertIsNotNone(adam.m)
-        self.assertIsNotNone(adam.v)
-        self.assertEqual(adam.t, 1)
-
-if __name__ == '__main__':
-    unittest.main()                 

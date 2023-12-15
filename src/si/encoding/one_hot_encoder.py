@@ -54,7 +54,7 @@ class OneHotEncoder:
 
         # get the unique characters in data
         seq = ''.join(data)
-        self.alphabet = set(np.unique(list(seq)))
+        self.alphabet = set(np.unique(list(seq)))   # set and np.unique are the same? -> ... =  set(seq)
 
         for i, char in enumerate(self.alphabet):
             self.char_to_index[char] = i
