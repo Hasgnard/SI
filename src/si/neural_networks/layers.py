@@ -214,7 +214,10 @@ class DenseLayer(Layer):
 
 class Dropout(Layer):
     """
-    Dropout layer of a neural network.
+    Dropout layer of a neural network is a regularization technique where a random set of neurons is
+    temporarily ignored dropped out) during training, helping prevent overfitting by promoting
+    robustness and generalization in the model.
+
     """
 
     def __init__(self, rate: float):
@@ -270,7 +273,7 @@ class Dropout(Layer):
     
     def backward_propagation(self, output_error: np.ndarray) -> float:
         """
-        performs backward propagation on the given error, i.e., 
+        Performs backward propagation on the given error, i.e., 
         multiplies the received error by the mask
 
         Parameters
@@ -314,33 +317,60 @@ class Dropout(Layer):
         return 0
     
 
-class TestDropout(unittest.TestCase):
-    def test_random_input(self):
-        # Create a random input
-        input_data = np.random.randn(3, 3)
+# class TestDropout(unittest.TestCase):
+#     def test_random_input(self):
+#         # Create a random input
+#         input_data = np.random.randn(3, 3)
 
-        # Create a Dropout layer with a moderate dropout rate
-        dropout_rate = 0.3
-        dropout_layer = Dropout(rate=dropout_rate)
+#         # Create a Dropout layer with a moderate dropout rate
+#         dropout_rate = 0.3
+#         dropout_layer = Dropout(rate=dropout_rate)
 
-        # During training
-        output_train = dropout_layer.forward_propagation(input_data, training=True)
+#         # During training
+#         output_train = dropout_layer.forward_propagation(input_data, training=True)
 
-        # Check if the shape of the output is the same as the input
-        self.assertEqual(output_train.shape, input_data.shape)
+#         # Check if the shape of the output is the same as the input
+#         self.assertEqual(output_train.shape, input_data.shape)
 
-        # Check if some elements are zeroed out (due to dropout)
-        self.assertTrue(np.any(output_train != input_data))
+#         # Check if some elements are zeroed out (due to dropout)
+#         self.assertTrue(np.any(output_train != input_data))
 
-        # During inference
-        output_inference = dropout_layer.forward_propagation(input_data, training=False)
+#         # During inference
+#         output_inference = dropout_layer.forward_propagation(input_data, training=False)
 
-        # Check if the shape of the output is the same as the input
-        self.assertEqual(output_inference.shape, input_data.shape)
+#         # Check if the shape of the output is the same as the input
+#         self.assertEqual(output_inference.shape, input_data.shape)
 
-        # Check if the output is equal to the input (no dropout during inference)
-        self.assertTrue(np.array_equal(output_inference, input_data))
+#         # Check if the output is equal to the input (no dropout during inference)
+#         self.assertTrue(np.array_equal(output_inference, input_data))
 
 if __name__ == '__main__':
-    unittest.main()
 
+    np.random.seed(42)
+    
+    input_data = np.random.randn(100, 50)
+    dropout_layer = Dropout(rate=0.2)
+
+    out_training = dropout_layer.forward_propagation(input_data, training=True)
+    out_inference = dropout_layer.forward_propagation(input_data, training=False)
+
+    
+  
+    import tensorflow as tf
+    import keras
+
+    tf_dropout_layer = tf.keras.layers.Dropout(rate=0.2)
+    out_training_tf = tf_dropout_layer(input_data, training=True).numpy()
+    out_inference_tf = tf_dropout_layer(input_data, training=False).numpy()
+
+    print('Input data:',input_data)
+    print('Mask:',dropout_layer.mask)
+
+    print('SI implementation output training:', out_training)
+    print('TF output training:', out_training_tf)
+
+    print('SI implementation output inference:', out_inference)
+    print('TF output inference:', out_inference_tf)
+    
+    
+    

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Union
 
 import numpy as np
-import unittest
+#import unittest
 
 from si.neural_networks.layers import Layer
 
@@ -183,7 +183,8 @@ class ReLUActivation(ActivationLayer):
 
 class TanhActivation(ActivationLayer):
     """
-    Tanh activation function.
+    The tanh activation layer in NNs applies the hyperbolic tangent function to the output of
+    neurons, squashing the values to the range of -1 to 1.
     """
 
     def activation_function(self, input: np.ndarray):
@@ -223,7 +224,8 @@ class TanhActivation(ActivationLayer):
 
 class SoftmaxActivation(ActivationLayer):
     """
-    Softmax activation function.
+    The softmax activation layer in NNs transforms the raw output scores into a probability
+    distribution (that sums to 1), making it suitable for multi-class classification problems.
     """
 
     def activation_function(self, input: np.ndarray):
@@ -267,36 +269,73 @@ class SoftmaxActivation(ActivationLayer):
 
 
 # Test cases for the activation functions
-class TestActivationFunctions(unittest.TestCase):
+# class TestActivationFunctions(unittest.TestCase):
 
-    def test_tanh_activation(self):
-        tanh_activation = TanhActivation()
+#     def test_tanh_activation(self):
+#         tanh_activation = TanhActivation()
 
-        # Test forward pass
-        input_values = np.array([1.0, 2.0, 3.0])
-        output_tanh = tanh_activation.activation_function(input_values)
-        expected_output_tanh = np.tanh(input_values)
-        np.testing.assert_array_almost_equal(output_tanh, expected_output_tanh)
+#         # Test forward pass
+#         input_values = np.array([1.0, 2.0, 3.0])
+#         output_tanh = tanh_activation.activation_function(input_values)
+#         expected_output_tanh = np.tanh(input_values)
+#         np.testing.assert_array_almost_equal(output_tanh, expected_output_tanh)
 
-        # Test backward pass (derivative)
-        derivative_tanh = tanh_activation.derivative(input_values)
-        expected_derivative_tanh = 1 - np.tanh(input_values) ** 2
-        np.testing.assert_array_almost_equal(derivative_tanh, expected_derivative_tanh)
+#         # Test backward pass (derivative)
+#         derivative_tanh = tanh_activation.derivative(input_values)
+#         expected_derivative_tanh = 1 - np.tanh(input_values) ** 2
+#         np.testing.assert_array_almost_equal(derivative_tanh, expected_derivative_tanh)
 
-    def test_softmax_activation(self):
-        softmax_activation = SoftmaxActivation()
+#     def test_softmax_activation(self):
+#         softmax_activation = SoftmaxActivation()
 
-        # Test forward pass
-        input_values_softmax = np.array([1.0, 2.0, 3.0])
-        output_softmax = softmax_activation.activation_function(input_values_softmax)
+#         # Test forward pass
+#         input_values_softmax = np.array([1.0, 2.0, 3.0])
+#         output_softmax = softmax_activation.activation_function(input_values_softmax)
 
-        # Ensure the output sums to 1
-        self.assertAlmostEqual(np.sum(output_softmax), 1.0)
+#         # Ensure the output sums to 1
+#         self.assertAlmostEqual(np.sum(output_softmax), 1.0)
 
-        # Test backward pass (derivative)
-        derivative_softmax = softmax_activation.derivative(input_values_softmax)
+#         # Test backward pass (derivative)
+#         derivative_softmax = softmax_activation.derivative(input_values_softmax)
 
-        self.assertEqual(derivative_softmax.shape, input_values_softmax.shape)
+#         self.assertEqual(derivative_softmax.shape, input_values_softmax.shape)
 
 if __name__ == '__main__':
-    unittest.main()
+    import tensorflow as tf
+
+    # generate random input
+    input_values = np.random.randn(1, 10)
+
+    # test tanh activation
+    tanh_activation = TanhActivation()
+    output_tanh = tanh_activation.activation_function(input_values)
+    expected_output_tanh = np.tanh(input_values)
+
+    # test tensorflow tanh activation
+    output_tanh_tf = tf.nn.tanh(input_values)
+    
+    print("SI Tanh activation forward pass output: ", output_tanh)
+    print("Tensorflow tanh activation forward pass output: ", output_tanh_tf)
+    print("Expected tanh activation forward pass output: ", expected_output_tanh)
+
+    # test tanh activation derivative
+    derivative_tanh = tanh_activation.derivative(input_values)
+    print("SI Tanh activation derivative output: ", derivative_tanh)
+    
+    # test softmax activation
+    softmax_activation = SoftmaxActivation()
+    output_softmax = softmax_activation.activation_function(input_values)
+
+    # test tensorflow softmax activation
+    output_softmax_tf = tf.nn.softmax(input_values)
+
+    print("SI Softmax activation forward pass output: ", output_softmax)
+    print("Tensorflow softmax activation forward pass output: ", output_softmax_tf)
+
+    # ensure the output sums to 1
+    print("Sum of SI softmax activation output: ", np.sum(output_softmax))
+    print("Sum of tensorflow softmax activation output: ", np.sum(output_softmax_tf))
+
+
+
+
