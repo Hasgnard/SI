@@ -5,7 +5,14 @@ import numpy as np
 
 class OneHotEncoder:
     """
-    One-hot encoder for categorical features.
+    A OneHotEncoder is a type of encoder that transforms categorical data into a format 
+    that works better with machine learning algorithms. For each unique category in the data, 
+    OneHotEncoder creates a binary column where 1 represents the presence of the category 
+    and 0 represents the absence.
+    
+    The encoder also supports padding, which allows all sequences to be encoded to the same 
+    length. A special padding character is added to the alphabet and used to fill in short 
+    sequences up to the maximum length.
     """
 
     def __init__(self, padder: str, max_length: int = None):
@@ -41,12 +48,13 @@ class OneHotEncoder:
 
     def fit(self, data:list[str]):
         """
-        Fits the encoder to the data.
+        Fits the encoder to the data. Prepares the encoder by determining the unique characters 
+        in the data and mapping each character to a unique index.
 
         Parameters
         ----------
-        categorical_features: numpy.ndarray
-            The categorical features to encode.
+        data: list[str]
+            The list of strings to encode.
         """
         
         if self.max_length is None:
@@ -76,12 +84,12 @@ class OneHotEncoder:
 
     def transform(self, data:list[str]) -> np.ndarray:
         """
-        Transforms the given data into one-hot encoded features.
+        This mehod convert each character in the data to a one-hot encoded representation.
 
         Parameters
         ----------
-        data: numpy.ndarray
-            The categorical features to encode.
+        data: list[str]
+            The list of strings to encode.
 
         Returns
         -------
