@@ -9,7 +9,7 @@ class OneHotEncoder:
     that works better with machine learning algorithms. For each unique category in the data, 
     OneHotEncoder creates a binary column where 1 represents the presence of the category 
     and 0 represents the absence.
-    
+
     The encoder also supports padding, which allows all sequences to be encoded to the same 
     length. A special padding character is added to the alphabet and used to fill in short 
     sequences up to the maximum length.
@@ -121,8 +121,8 @@ class OneHotEncoder:
 
         Parameters
         ----------
-        categorical_features: numpy.ndarray
-            The categorical features to encode.
+        data: list[str]
+            The list of strings to encode.
 
         Returns
         -------
