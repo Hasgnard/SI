@@ -44,13 +44,14 @@ def train_test_split(dataset: Dataset, test_size: float = 0.2, random_state: int
 
 def stratified_train_test_split (dataset: Dataset, test_size: float = 0.2, random_state: int=42) -> Tuple[Dataset, Dataset]:
     '''
-    Perform a stratified train test split on the dataset
+    Perform a stratified train test split on the dataset. The dataset is split into training and testing sets 
+    while maintaining the same proportion of samples for each class in the original dataset.               
 
     Parameters
     ----------
     dataset: Dataset
         The dataset to split
-    test_size: float
+    test_size: float, default=0.2
         The proportion of the dataset to include in the test split
     random_state: int
         The seed of the random number generator

@@ -129,6 +129,9 @@ class Dataset:
     def dropna(self) -> None:
         """
         Drops all samples containing at least one null value (NaN)
+
+        This method modifies the dataset in-place.
+
         """
         # Check if there are any NaNs in X
         NaNs = np.isnan(self.X).any(axis=1)
@@ -148,20 +151,12 @@ class Dataset:
         Parameters
         ----------
         value:
-            replace the NaN with this value
+            The value to replace NaNs with. If value is a string, it must be either
+            'mean' or 'median'. If value is a float, it will replace all NaNs with
+            that value.
+
         '''
         # replace if value is str "mean" or "median"
-        # if isinstance(value, str):
-        #     if value == 'mean':
-        #         self.X = np.nan_to_num(self.X, nan=np.nanmean(self.X, axis=0))
-        #     elif value == 'median':
-        #         self.X = np.nan_to_num(self.X, nan=np.nanmedian(self.X, axis=0))
-        #     else:
-        #         raise ValueError("value must be either 'mean' or 'median' or a float")
-        
-        # # replace if value is float
-        # else:
-        #     self.X = np.nan_to_num(self.X, nan=value)
         if isinstance(value, str):
             if value == 'mean':
                 replacement_values = np.nanmean(self.X, axis=0)
@@ -170,11 +165,11 @@ class Dataset:
             else:
                 raise ValueError("value must be either 'mean' or 'median' or a float")
     
-    # replace if value is float
+        # replace if value is float
         else:
             replacement_values = value
 
-    # Replace NaN values with the specified/replacement values
+        # Replace NaN values with the specified/replacement values
         self.X = np.where(np.isnan(self.X), replacement_values, self.X)
     
 

@@ -45,7 +45,8 @@ class PCA:
         Returns
         -------
         np.ndarray
-            Centered data.'''
+            Centered data.
+        '''
 
         self.mean = np.mean(dataset.X, axis=0)
         self.centered_data = dataset.X - self.mean
@@ -56,6 +57,11 @@ class PCA:
     def _get_components(self, dataset: Dataset) -> np.ndarray:
         '''
         Get the principal components from the centered dataset.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            Dataset to be used to get the principal components.
         
         Returns
         -------
@@ -73,6 +79,11 @@ class PCA:
     def _get_explained_variance(self, dataset: Dataset) -> np.ndarray:
         '''
         Get the explained variance from the centered dataset.
+
+        Parameters
+        ----------
+        dataset: Dataset
+            Dataset to be used to get the explained variance.
         
         Returns
         -------
@@ -148,4 +159,3 @@ class PCA:
         
         self.fit(dataset)
         return self.transform(dataset)
-

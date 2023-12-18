@@ -8,16 +8,15 @@ from si.statistics.f_classification import f_classification
 
 class SelectPercentile:
     """
-    Select features according to the k highest scores.
+    Select features according to a percentile of the highest scores.
     Feature ranking is performed by computing the scores of each feature using a scoring function:
         - f_classification: ANOVA F-value between label/feature for classification tasks.
-        - f_regression: F-value obtained from F-value of r's pearson correlation coefficients for regression tasks.
 
     Parameters
     ----------
     score_func: callable
         Function taking dataset and returning a pair of arrays (scores, p_values)
-    k: int, default=10
+    percentile: int, default=5
         Number of top features to select.
 
     Attributes
@@ -29,13 +28,14 @@ class SelectPercentile:
     """
     def __init__(self, score_func: Callable = f_classification, percentile: int = 5):
         """
-        Select features according to the k highest scores.
+        Select features according to a percentile of the highest scores.
 
         Parameters
         ----------
         score_func: callable
             Function taking dataset and returning a pair of arrays (scores, p_values)
-        k: int, default=10
+
+        percentile: int, default=5
             Number of top features to select.
         """
         self.percentile = percentile
@@ -45,7 +45,7 @@ class SelectPercentile:
 
     def fit(self, dataset: Dataset) -> 'SelectPercentile':
         """
-        It fits SelectKBest to compute the F scores and p-values.
+        Estimates the F an p values for each feature of the dataset.
 
         Parameters
         ----------
@@ -64,7 +64,7 @@ class SelectPercentile:
 
     def transform(self, dataset: Dataset) -> Dataset:
         """
-        It transforms the dataset by selecting the k highest scoring features.
+        Selects features with the highest F values up to the percentile threshold.
 
         Parameters
         ----------
@@ -74,8 +74,9 @@ class SelectPercentile:
         Returns
         -------
         dataset: Dataset
-            A labeled dataset with the k highest scoring features.
+            A labeled dataset with the features scoring above the percentile threshold.
         """
+
         threshold = np.percentile(self.F, 100 - self.percentile)
         idxs = np.where(self.F >= threshold)[0]
         
@@ -84,7 +85,7 @@ class SelectPercentile:
 
     def fit_transform(self, dataset: Dataset) -> Dataset:
         """
-        It fits SelectKBest and transforms the dataset by selecting the k highest scoring features.
+        It fits SelectPercentile and transforms the dataset by selecting the features scoreing above the percentile threshold.
 
         Parameters
         ----------
@@ -94,7 +95,7 @@ class SelectPercentile:
         Returns
         -------
         dataset: Dataset
-            A labeled dataset with the k highest scoring features.
+            A labeled dataset with the features scoring above the percentile threshold.
         """
         self.fit(dataset)
         return self.transform(dataset)
