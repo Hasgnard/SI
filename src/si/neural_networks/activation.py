@@ -267,39 +267,6 @@ class SoftmaxActivation(ActivationLayer):
         return softmax * (1 - softmax)
     
 
-
-# Test cases for the activation functions
-# class TestActivationFunctions(unittest.TestCase):
-
-#     def test_tanh_activation(self):
-#         tanh_activation = TanhActivation()
-
-#         # Test forward pass
-#         input_values = np.array([1.0, 2.0, 3.0])
-#         output_tanh = tanh_activation.activation_function(input_values)
-#         expected_output_tanh = np.tanh(input_values)
-#         np.testing.assert_array_almost_equal(output_tanh, expected_output_tanh)
-
-#         # Test backward pass (derivative)
-#         derivative_tanh = tanh_activation.derivative(input_values)
-#         expected_derivative_tanh = 1 - np.tanh(input_values) ** 2
-#         np.testing.assert_array_almost_equal(derivative_tanh, expected_derivative_tanh)
-
-#     def test_softmax_activation(self):
-#         softmax_activation = SoftmaxActivation()
-
-#         # Test forward pass
-#         input_values_softmax = np.array([1.0, 2.0, 3.0])
-#         output_softmax = softmax_activation.activation_function(input_values_softmax)
-
-#         # Ensure the output sums to 1
-#         self.assertAlmostEqual(np.sum(output_softmax), 1.0)
-
-#         # Test backward pass (derivative)
-#         derivative_softmax = softmax_activation.derivative(input_values_softmax)
-
-#         self.assertEqual(derivative_softmax.shape, input_values_softmax.shape)
-
 if __name__ == '__main__':
     import tensorflow as tf
 
