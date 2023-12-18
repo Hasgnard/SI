@@ -23,11 +23,11 @@ def randomized_search_cv(model,
         The dataset to cross validate on.
     hyperparameter_grid: Dict[str, Tuple]
         The hyperparameter grid to use.
-    scoring: Callable
+    scoring: Callable, default=None
         The scoring function to use.
-    cv: int
+    cv: int, default=5
         The cross validation folds.
-    n_iter: int
+    n_iter: int, default=10
         The number of iterations to perform.
 
     Returns

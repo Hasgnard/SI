@@ -15,9 +15,9 @@ class RidgeRegressionLeastSquares:
     Parameters
     ----------
     l2_penalty: float
-        The L2 regularization parameter
+        The L2 regularization parameter. This adds a penalty equivalent to square of the magnitude of coefficients.
     scale: bool
-        Whether to scale the dataset or not
+        Whether to scale the dataset or not.  If True, the dataset will be standardized before training.
 
     Attributes
     ----------
@@ -55,7 +55,7 @@ class RidgeRegressionLeastSquares:
     def fit(self, dataset: Dataset) -> 'RidgeRegressionLeastSquares':
 
         """
-        It fits the model to the given dataset.
+        It fits the model to the given dataset. If self.scale is True, the dataset will be standardized before training.
 
         Parameters
         ----------
@@ -142,8 +142,10 @@ class RidgeRegressionLeastSquares:
             The score of the model
         """
         return mse(dataset.y, self.predict(dataset))
+    
 
-# This is how you can test it against sklearn
+
+
 if __name__ == '__main__':
     
     X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])

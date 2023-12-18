@@ -27,15 +27,22 @@ class RandomForestClassifier:
         ----------
         n_estimators: int
             The number of trees in the forest.
+
         max_features: float
-            The number of features to consider when looking for the best split
-        min_sample_split: int
-            The minimum number of samples required to split an internal node
-        seed: int
+            The number of features to consider when looking for the best split. If None, all features 
+            will be considered when looking for the best split while training each decision tree.
+
+        min_sample_split: int, default=2
+            The minimum number of samples required to split an internal node. If less than this number
+            of samples are present at a node, the node will not be split.
+
+        seed: int, default=42
             The seed to ensure reproducibility
-        max_depth: int
-            The maximum depth of the tree
-        mode: str
+
+        max_depth: int, default=10
+            The maximum depth of the tree. Deeper trees can capture more complex patterns which can lead to overfitting.
+
+        mode: {'gini', 'entropy'}, default='gini'
             The mode to use to specify the criterion for splitting in the decision trees
         """
 
@@ -85,6 +92,7 @@ class RandomForestClassifier:
             self.tree.append((tree, bootstrap_features))
         
         return self
+    
 
     def predict(self, dataset: Dataset) -> np.ndarray:
 
@@ -153,3 +161,4 @@ if __name__ == '__main__':
     model = RFC(n_estimators=5, max_depth=3, min_samples_split=3)
     model.fit(train.X, train.y)
     print(model.score(test.X, test.y))
+   

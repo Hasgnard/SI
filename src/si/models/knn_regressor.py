@@ -117,12 +117,12 @@ class KNNRegressor:
     
     def score(self, dataset: Dataset) -> float:
         '''
-        Computes the accuracy of the model on the given dataset
+        Computes the Root Mean Square Error (RMSE) of the model on the given dataset
 
         Parameters
         ----------
         dataset: Dataset
-            Dataset to compute the accuracy on
+            Dataset to compute the RMSE on
         
         Returns
         -------
